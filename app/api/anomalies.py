@@ -23,7 +23,8 @@ def anomalies_report_isolation_forest() -> AnomaliesReportOutSchema:
 
     df = pd.read_csv("app/datasets/transactions_dataset.csv")
 
-    contamination = 0.05
+    # Value chosen based on visualization of data
+    contamination = 0.02
     # Initializing the Isolation Forest model
     model = IsolationForest(
         contamination=contamination
@@ -37,65 +38,17 @@ def anomalies_report_isolation_forest() -> AnomaliesReportOutSchema:
 
     # Get anomaly scores for each transaction
     df["anomaly_score"] = model.decision_function(df[["Transaction_Amount"]])
+    # Outliers will be marked as -1
+    df["anomaly"] = model.predict(df[["Transaction_Amount"]])
 
-    # Value chosen based on visualization of data
-    threshold = -0.17
-
-    # Identify anomalies based on the threshold
-    anomalies = df[df["anomaly_score"] < threshold]
+    anomalies = df[df["anomaly"] == -1]
 
     # Building output structure of anomalies
     anomalies_report = anomalies_builder(anomalies)
 
-    logger.info("Anomalies detected using Isolation Forest: {anomalies_report}")
+    logger.info(f"Anomalies detected using Isolation Forest: {anomalies_report}")
 
     return anomalies_report
-
-
-# def anomalies_report_one_class_SVM() -> AnomaliesReportOutSchema:
-#     df = pd.read_csv("app/datasets/transactions_dataset.csv")
-#     # Standardize the Transaction_Amount feature
-#     scaler = StandardScaler()
-#     df[["Transaction_Amount_scaler"]] = scaler.fit_transform(df[["Transaction_Amount"]])
-
-#     # Define the parameter grid for grid search
-#     param_grid = {"nu": [0.01, 0.05, 0.1, 0.2, 0.5]}
-
-#     # Initialize the OneClassSVM model
-#     model = OneClassSVM()
-
-#     # Initialize the GridSearchCV
-#     grid_search = GridSearchCV(
-#         model, param_grid, cv=5, scoring="accuracy"
-#     )  # Adjust scoring based on your evaluation metric
-
-#     # Fit the grid search to the data
-#     grid_search.fit(df[["Transaction_Amount_scaler"]])
-
-#     # Get the best parameters from the grid search
-#     best_params = grid_search.best_params_
-
-#     # Print the best parameters
-#     print("Best Parameters:", best_params)
-
-#     # Access the best model
-#     best_model = grid_search.best_estimator_
-
-#     # Get anomaly scores using the decision_function
-#     df["anomaly_score"] = best_model.decision_function(
-#         df[["Transaction_Amount_scaler"]]
-#     )
-
-#     # Set a threshold manually based on the anomaly scores
-#     threshold = -0.02  # Adjust based on your analysis
-
-#     # Select anomalies based on the threshold
-#     anomalies = df[df["anomaly_score"] < threshold]
-
-#     anomalies_report = anomalies_builder(anomalies)
-
-
-#     return anomalies_report
 
 
 def anomalies_report_dbscan() -> AnomaliesReportOutSchema:
@@ -141,20 +94,12 @@ def anomalies_report_dbscan() -> AnomaliesReportOutSchema:
     # Building output structure of anomalies
     anomalies_report = anomalies_builder(anomalies)
 
-    logger.info("Anomalies detected using DBSCAN: {anomalies_report}")
+    logger.info(f"Anomalies detected using DBSCAN: {anomalies_report}")
 
     return anomalies_report
 
 
 def anomalies_builder(anomalies: pd.DataFrame) -> dict:
-    anomalies_report = {"anomalies": []}
-
-    for _, row in anomalies.iterrows():
-        anomaly_dict = {
-            "Transaction_ID": row["Transaction_ID"],
-            "Date": row["Date"],
-            "Transaction_Amount": row["Transaction_Amount"],
-            "Country": row["Country"],
-        }
-        anomalies_report["anomalies"].append(anomaly_dict)
+    # converting the DataFrame directly into a list of dictionaries
+    anomalies_report = {"anomalies": anomalies.to_dict(orient="records")}
     return anomalies_report
