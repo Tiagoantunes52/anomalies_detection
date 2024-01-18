@@ -5,14 +5,14 @@ The implemented endpoints will return a list of anomalies.
 
 ## Setup
 In order to setup this application you'll need docker and docker-compose plugin installed on your local machine.
-- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Engine](https://docs.docker.com/engine/install/)
 - [Docker Compose plugin](https://docs.docker.com/compose/install/linux/#install-using-the-repository)
 
 
 To build and start the container simply run:
 
 ```bash
-docker-compose up -d --build
+sudo docker-compose up -d --build
 ```
 
 After the container is up and running the documentation is accessible via http://localhost:5050/docs
@@ -48,12 +48,12 @@ Some minimal unit tests, using pytest, have been included to test the api funtio
 
 First check your container name:
 ```bash
-docker ps
+sudo docker ps
 ```
 
 Access a bash terminal inside the container:
 ```bash
-docker exec -it <YOUR-CONTIANER-NAME> bash
+sudo docker exec -it <YOUR-CONTIANER-NAME> bash
 ```
 
 Then run the following command to run the tests:
