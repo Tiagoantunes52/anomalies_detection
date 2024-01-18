@@ -1,11 +1,19 @@
+import sys
+import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import logging
+
 
 from app.routers import anomalies
 
-# Setup loggers
-logging.config.fileConfig("logging.conf", disable_existing_loggers=False)
+
+# Checking if running in a testing environment
+testing = "pytest" in sys.modules
+
+# Setup loggers only if not in testing mode
+if not testing:
+    logging.config.fileConfig("logging.conf", disable_existing_loggers=False)
+
 
 # Initialize app
 app = FastAPI()
