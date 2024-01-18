@@ -25,7 +25,7 @@ There are two GET endpoints provided for fetching the anomalies with diferent im
 
 * DBSCAN (Density-Based Spatial Clustering of Applications with Noise is a clustering algorithm used for data analysis and pattern recognition)
   * /api/v1/anomalies_report_dbscan
-  ```
+  ```bash
   curl -X 'GET' \
   'http://localhost:5050/api/v1/anomalies_report_dbscan' \
   -H 'accept: application/json'
@@ -34,7 +34,7 @@ There are two GET endpoints provided for fetching the anomalies with diferent im
 
 * Isolation Forest (unsupervised learning algorithm used for anomaly detection)
   * /api/v1/anomalies_report_isolation_forest
-  ```
+  ```bash
   curl -X 'GET' \
   'http://localhost:5050/api/v1/anomalies_report_isolation_forest' \
   -H 'accept: application/json'
@@ -44,5 +44,19 @@ There are two GET endpoints provided for fetching the anomalies with diferent im
 To ascertain the anticipated result of model predictions, exploratory data analysis was employed to pinpoint outliers within the dataset. Using Jupyter notebooks, a data distribution was visualized, based on the "Transaction_Amount" column, revealing a distinct cluster of points noticeably segregated from the overwhelming majority of data points. While most data points converge around 1000, another group of data points can be detected at around 3000. The jupyter notebook can be found in the exploratory_data_analysis folder.
 
 ## Tests
-Some minimal unit tests have been included to test the api funtionality
+Some minimal unit tests, using pytest, have been included to test the api funtionality.
 
+First check your container name:
+```bash
+docker ps
+```
+
+Access a bash terminal inside the container:
+```bash
+docker exec -it <YOUR-CONTIANER-NAME> bash
+```
+
+Then run the following command to run the tests:
+```bash
+pytest -p no:warnings
+```

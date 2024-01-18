@@ -1,11 +1,9 @@
 import pandas as pd
 import logging
 from sklearn.ensemble import IsolationForest
-from sklearn.svm import OneClassSVM
 from sklearn.model_selection import GridSearchCV
 from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import StandardScaler
-from fastapi import HTTPException
 
 from app.schemas.anomalies import AnomaliesReportOutSchema
 
@@ -18,17 +16,16 @@ def anomalies_report_isolation_forest() -> AnomaliesReportOutSchema:
     Detect anomalies in a transactions dataset using Isolation Forest.
 
     Returns:
-    - anomalies_report: An object containing a list of dictionaries, each representing an anomaly.
+    - AnomaliesReportOutSchema: An object containing a list of Anomaly objects, each representing a detected anomaly.
     """
 
     df = pd.read_csv("app/datasets/transactions_dataset.csv")
 
+    # Adjusting contamination based on expected anomaly rate
     # Value chosen based on visualization of data
     contamination = 0.02
     # Initializing the Isolation Forest model
-    model = IsolationForest(
-        contamination=contamination
-    )  # Adjusting contamination based on expected anomaly rate
+    model = IsolationForest(contamination=contamination)
     logger.info(
         f"Initialized Isolation Forest model with contamination = {contamination}"
     )
@@ -48,7 +45,7 @@ def anomalies_report_isolation_forest() -> AnomaliesReportOutSchema:
 
     logger.info(f"Anomalies detected using Isolation Forest: {anomalies_report}")
 
-    return anomalies_report
+    return AnomaliesReportOutSchema(**anomalies_report)
 
 
 def anomalies_report_dbscan() -> AnomaliesReportOutSchema:
@@ -56,7 +53,7 @@ def anomalies_report_dbscan() -> AnomaliesReportOutSchema:
     Detect anomalies in a transactions dataset using DBSCAN (Density-Based Spatial Clustering of Applications with Noise).
 
     Returns:
-    - anomalies_report: An object containing a list of dictionaries, each representing an anomaly.
+    - AnomaliesReportOutSchema: An object containing a list of Anomaly objects, each representing a detected anomaly.
     """
 
     df = pd.read_csv("app/datasets/transactions_dataset.csv")
@@ -66,6 +63,8 @@ def anomalies_report_dbscan() -> AnomaliesReportOutSchema:
     df["Transaction_Amount_scaled"] = scaler.fit_transform(df[["Transaction_Amount"]])
 
     # Parameter grid for grid search
+    # eps: distance between points to define a neighborhood
+    # min_samples: minimum number of points required to form a dense region
     param_grid = {"eps": [0.3, 0.5, 1.0], "min_samples": [10, 15, 20]}
 
     # Initializing the DBSCAN model
@@ -96,7 +95,7 @@ def anomalies_report_dbscan() -> AnomaliesReportOutSchema:
 
     logger.info(f"Anomalies detected using DBSCAN: {anomalies_report}")
 
-    return anomalies_report
+    return AnomaliesReportOutSchema(**anomalies_report)
 
 
 def anomalies_builder(anomalies: pd.DataFrame) -> dict:
