@@ -1,8 +1,6 @@
-import pandas as pd
 from fastapi.testclient import TestClient
 
 from main import app
-from app.schemas.anomalies import AnomaliesReportOutSchema
 
 
 # Define a test client

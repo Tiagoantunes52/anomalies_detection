@@ -6,17 +6,17 @@ The implemented endpoints will return a list of anomalies.
 ## Setup
 In order to setup this application you'll need docker and docker-compose plugin installed on your local machine.
 - [Docker Engine](https://docs.docker.com/engine/install/)
-- [Docker Compose plugin](https://docs.docker.com/compose/install/linux/#install-using-the-repository)
 
 
 To build and start the container simply run:
 
 ```bash
-sudo docker-compose up -d --build
+docker build -t anomalies_app .
+
+docker run -p 5050:5050 anomalies_app
 ```
 
 After the container is up and running the documentation is accessible via http://localhost:5050/docs
-
 
 
 ## How to use

@@ -13,7 +13,10 @@ logger = logging.getLogger(__name__)
 @router.get(
     "/api/v1/anomalies_report_isolation_forest", response_model=AnomaliesReportOutSchema
 )
-def get_anomalies_report():
+def get_anomalies_report_isolation_forest():
+    """
+    Endpoint for getting anomalies based on isolation forest
+    """
     try:
         anomalies_report = anomalies.anomalies_report_isolation_forest()
         return anomalies_report
@@ -26,7 +29,10 @@ def get_anomalies_report():
 
 
 @router.get("/api/v1/anomalies_report_dbscan", response_model=AnomaliesReportOutSchema)
-def get_anomalies_report():
+def get_anomalies_report_dbscan():
+    """
+    Endpoint for getting anomalies based on DBSCAN
+    """
     try:
         anomalies_report = anomalies.anomalies_report_dbscan()
         return anomalies_report

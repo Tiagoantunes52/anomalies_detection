@@ -3,11 +3,10 @@ FROM python:3.11-buster
 RUN mkdir app
 WORKDIR /app
 
-ENV PATH="${PATH}:/root/.local/bin"
-ENV PYTHONPATH=.
-
-COPY requirements.txt .
+COPY requirements.txt /app/requirements.txt
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
-COPY main.py .
+COPY . /app
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5050"]

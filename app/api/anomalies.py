@@ -16,7 +16,8 @@ def anomalies_report_isolation_forest() -> AnomaliesReportOutSchema:
     Detect anomalies in a transactions dataset using Isolation Forest.
 
     Returns:
-    - AnomaliesReportOutSchema: An object containing a list of Anomaly objects, each representing a detected anomaly.
+    - AnomaliesReportOutSchema: An object containing a list of Anomaly objects,
+      each representing a detected anomaly.
     """
 
     df = pd.read_csv("app/datasets/transactions_dataset.csv")
